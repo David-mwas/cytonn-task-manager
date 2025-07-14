@@ -1,8 +1,8 @@
-const Task = require("../models/Task.model");
-const User = require("../models/User.model");
-const sendEmail = require("../utils/sendEmail");
+import Task  from "../models/Task.model.js";
+import User from "../models/User.model.js";
+import sendEmail from "../utils/sendEmail.js"
 
-exports.createTask = async (req, res) => {
+export const createTask = async (req, res) => {
   const task = await Task.create({ ...req.body, createdBy: req.user.id });
   const assignedUser = await User.findById(req.body.assignedTo);
   await sendEmail(
@@ -13,13 +13,13 @@ exports.createTask = async (req, res) => {
   res.status(201).json(task);
 };
 
-exports.getTasks = async (req, res) => {
+export const getTasks = async (req, res) => {
   const query = req.user.role === "admin" ? {} : { assignedTo: req.user.id };
   const tasks = await Task.find(query).populate("assignedTo", "name email");
   res.json(tasks);
 };
 
-exports.updateStatus = async (req, res) => {
+export const updateStatus = async (req, res) => {
   const task = await Task.findById(req.params.id);
   if (!task) return res.status(404).json({ message: "Task not found" });
   if (req.user.role !== "admin" && String(task.assignedTo) !== req.user.id)

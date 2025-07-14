@@ -1,25 +1,53 @@
-const express = require("express");
-const connectDB = require("./config/db");
-const cors = require("cors");
-require("dotenv").config();
+import express from "express";
+import cors from "cors";
+import { config } from "dotenv";
+import authRoute from "./routes/auth.route.js";
+import usersRoute from "./routes/users.route.js";
+import tasksRoute from "./routes/tasks.route.js";
+import connectDB from "./config/db.js";
+
+config();
 
 const app = express();
-connectDB();
 
+//middlewares;
 app.use(cors());
 app.use(express.json());
 
-// middlewares routes
-app.use("/api/v1/auth", require("./routes/auth.route"));
-app.use("/api/v1/users", require("./routes/users.route"));
-app.use("/api/v1/tasks", require("./routes/tasks.route"));
+//routes
+app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/users", usersRoute);
+app.use("/api/v1/tasks", tasksRoute);
 
 // home route
 app.get("/", (req, res) => {
   res.send("Hello from cytonn-task-manager!");
 });
 
-const PORT = process.env.PORT || 5000;
+// error handling
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+  res.status(500).json({ error: err.message || "Internal server error" });
+});
 
-// start server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT || 5000;
+const startSever = async () => {
+  try {
+    await connectDB();
+
+    // listen for local development
+    if (process.env.NODE_ENV !== "production") {
+      app.listen(PORT, () =>
+        console.info(`server running on http://localhost:${PORT}`)
+      );
+    }
+  } catch (error) {
+    console.error("Error", error);
+    process.exit(1);
+  }
+};
+
+startSever();
+
+// export for vercel
+export default app;
