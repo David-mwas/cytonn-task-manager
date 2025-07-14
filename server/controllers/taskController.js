@@ -21,6 +21,16 @@ export const getTasks = async (req, res) => {
   res.json(tasks);
 };
 
+// GET /api/v1/tasks/me
+export const getUserTasks = async (req, res, next) => {
+  try {
+    const tasks = await Task.find({ assignedTo: req.user.id });
+    res.json(tasks);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const updateStatus = async (req, res) => {
   const task = await Task.findById(req.params.id);
   if (!task) return res.status(404).json({ message: "Task not found" });
