@@ -65,6 +65,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto p-6">
         <DashboardHeader
+          title="Admin Dashboard"
           user={user}
           onLogout={logout}
           onHamburgerClick={() => setSidebarOpen((s) => !s)}

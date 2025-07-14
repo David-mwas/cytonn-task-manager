@@ -1,7 +1,7 @@
 import { createContext } from "react";
 
 type User = {
-  id: string;
+  _id: string;
   email: string;
   role: "admin" | "user";
 };
