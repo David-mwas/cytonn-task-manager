@@ -10,9 +10,9 @@ app.use(cors());
 app.use(express.json());
 
 // middlewares routes
-app.use("/api/v1/auth", require("./routes/auth"));
-app.use("/api/v1/users", require("./routes/users"));
-app.use("/api/v1/tasks", require("./routes/tasks"));
+app.use("/api/v1/auth", require("./routes/auth.route"));
+app.use("/api/v1/users", require("./routes/users.route"));
+app.use("/api/v1/tasks", require("./routes/tasks.route"));
 
 // home route
 app.get("/", (req, res) => {

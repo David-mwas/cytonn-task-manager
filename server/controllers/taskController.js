@@ -1,5 +1,5 @@
-const Task = require("../models/Task");
-const User = require("../models/User");
+const Task = require("../models/Task.model");
+const User = require("../models/User.model");
 const sendEmail = require("../utils/sendEmail");
 
 exports.createTask = async (req, res) => {
