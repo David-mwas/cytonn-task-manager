@@ -24,7 +24,7 @@ export default function AdminDashboard() {
   };
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [user]);
 
   return (
     <div className="flex h-screen overflow-hidden">

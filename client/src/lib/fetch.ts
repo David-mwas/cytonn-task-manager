@@ -1,19 +1,24 @@
 const BASE_URL =
   import.meta.env.VITE_BASE_URL || "http://localhost:5000/api/v1";
 
-const storedUser = localStorage.getItem("cytonnUser");
-const parsedUser = storedUser ? JSON.parse(storedUser) : null;
-
-const token = parsedUser?.token || null;
-
-if (!token) {
-  console.warn(
-    "No token found in localStorage. API calls will not be authenticated."
+function getToken() {
+  return (
+    localStorage.getItem("token") ||
+    (() => {
+      const stored = localStorage.getItem("cytonnUserToken");
+      if (!stored) return null;
+      try {
+        return stored;
+      } catch {
+        return null;
+      }
+    })()
   );
 }
 
 export const api = {
   get: async (path: string) => {
+    const token = getToken();
     const res = await fetch(`${BASE_URL}${path}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -24,6 +29,7 @@ export const api = {
   },
 
   post: async (path: string, body: any) => {
+    const token = getToken();
     const res = await fetch(`${BASE_URL}${path}`, {
       method: "POST",
       headers: {
@@ -37,6 +43,7 @@ export const api = {
   },
 
   put: async (path: string, body: any) => {
+    const token = getToken();
     const res = await fetch(`${BASE_URL}${path}`, {
       method: "PUT",
       headers: {
@@ -50,6 +57,7 @@ export const api = {
   },
 
   delete: async (path: string) => {
+    const token = getToken();
     const res = await fetch(`${BASE_URL}${path}`, {
       method: "DELETE",
       headers: {

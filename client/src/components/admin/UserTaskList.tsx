@@ -10,7 +10,7 @@ export default function UserTaskList({
   refresh: () => void;
 }) {
   const updateStatus = async (id: string, status: Task["status"]) => {
-    await api.put(`/tasks/${id}`, { status });
+    await api.put(`/tasks/${id}/status`, { status });
     refresh();
   };
 
@@ -23,7 +23,7 @@ export default function UserTaskList({
   }
 
   return (
-    <ul className="space-y-4">
+    <ul className="space-y-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {tasks.map((task) => {
         const badgeColor =
           task.status === "Completed"

@@ -5,7 +5,6 @@ import type { Task, User } from "../../types/types";
 export default function TaskList({
   tasks,
   users,
-  refresh,
 }: {
   tasks: Task[];
   users: User[];
@@ -65,7 +64,7 @@ export default function TaskList({
                 <span>Due: {new Date(task.deadline).toLocaleDateString()}</span>
                 <span>
                   Assigned to:{" "}
-                  {users.find((u) => u._id === task.assignedTo._id)?.email ??
+                  {users.find((u) => u._id === task.assignedTo?._id)?.email ??
                     "Unassigned"}
                 </span>
               </div>

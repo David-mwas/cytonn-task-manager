@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { api } from "../../lib/fetch";
@@ -12,19 +11,13 @@ export default function UserDashboard() {
   const [search, setSearch] = useState("");
 
   const fetchTasks = async () => {
-    const all = await api.get("/tasks");
-    setTasks(
-      all.filter((t: Task) =>
-        typeof t.assignedTo === "object"
-          ? t.assignedTo._id === user?._id
-          : t.assignedTo === user?._id
-      )
-    );
+    const myTasks = await api.get("/tasks/mytasks");
+    setTasks(myTasks);
   };
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [user]);
 
   const filtered = tasks.filter((t) =>
     t.title.toLowerCase().includes(search.toLowerCase())
@@ -32,9 +25,9 @@ export default function UserDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <DashboardHeader user={user} onLogout={logout} title="My Tasks" />
+      <DashboardHeader user={user} onLogout={logout} title="My Dashboard" />
 
-      <main className="pt-28 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+      <main className="pt-28 px-4 sm:px-6 lg:px-8 max-w-4xl lg:max-w-[80%] mx-auto">
         <div className="relative mb-6">
           <input
             type="text"
@@ -47,7 +40,7 @@ export default function UserDashboard() {
             🔍
           </span>
         </div>
-
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">My Tasks</h2>
         <UserTaskList tasks={filtered} refresh={fetchTasks} />
       </main>
     </div>
