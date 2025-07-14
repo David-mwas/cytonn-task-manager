@@ -1,15 +1,17 @@
-import Task  from "../models/Task.model.js";
+import Task from "../models/Task.model.js";
 import User from "../models/User.model.js";
-import sendEmail from "../utils/sendEmail.js"
+import sendEmail from "../utils/sendEmail.js";
 
 export const createTask = async (req, res) => {
   const task = await Task.create({ ...req.body, createdBy: req.user.id });
   const assignedUser = await User.findById(req.body.assignedTo);
-  await sendEmail(
-    assignedUser.email,
-    "New Task Assigned",
-    `You have a new task: ${task.title}`
-  );
+
+  await sendEmail({
+    to: assignedUser.email, // or whoever is receiving the email
+    subject: "New Task Assigned",
+    html: `<p>Hi ${assignedUser.name}, You have a new task: ${task.title}</p>`,
+  });
+
   res.status(201).json(task);
 };
 

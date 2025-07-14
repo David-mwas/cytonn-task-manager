@@ -1,12 +1,13 @@
 import express from "express";
 import cors from "cors";
-import { config } from "dotenv";
+import dotenv from "dotenv";
 import authRoute from "./routes/auth.route.js";
 import usersRoute from "./routes/users.route.js";
 import tasksRoute from "./routes/tasks.route.js";
 import connectDB from "./config/db.js";
 
-config();
+dotenv.config();
+console.log(process.env.EMAIL_USER, process.env.EMAIL_PASS);
 
 const app = express();
 
