@@ -1,8 +1,8 @@
-// components/admin/UserManagement.tsx
 import { useState } from "react";
 import type { User } from "../../types/types";
 import { api } from "../../lib/fetch";
 import Modal from "./Modal";
+import toast from "react-hot-toast";
 
 type UserFormData = {
   email: string;
@@ -40,27 +40,44 @@ export default function UserManagement({
 
   const saveUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingUser) {
-      await api.put(`/users/${editingUser._id}`, {
-        email: formData.email,
-        role: formData.role,
-      });
-    } else {
-      await api.post("/auth/register", {
-        email: formData.email,
-        password: formData.password,
-        role: formData.role,
-      });
-    }
+
+    const isEditing = !!editingUser;
+    const action = isEditing ? "Updating user..." : "Creating user...";
+
+    await toast.promise(
+      isEditing
+        ? api.put(`/users/${editingUser._id}`, {
+            email: formData.email,
+            role: formData.role,
+          })
+        : api.post("/auth/register", {
+            email: formData.email,
+            password: formData.password,
+            role: formData.role,
+          }),
+      {
+        loading: action,
+        success: isEditing
+          ? "User updated successfully"
+          : "User created successfully",
+        error: isEditing ? "Failed to update user" : "Failed to create user",
+      }
+    );
+
     setShowModal(false);
     refresh();
   };
 
   const deleteUser = async (id: string) => {
-    if (confirm("Delete this user?")) {
-      await api.delete(`/users/${id}`);
-      refresh();
-    }
+    if (!confirm("Delete this user?")) return;
+
+    await toast.promise(api.delete(`/users/${id}`), {
+      loading: "Deleting user...",
+      success: "User deleted successfully",
+      error: "Failed to delete user",
+    });
+
+    refresh();
   };
 
   const filtered = users.filter((u) =>

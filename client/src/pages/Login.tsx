@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const { login } = useAuth();
@@ -25,25 +26,33 @@ const Login = () => {
     setError("");
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const data = await toast.promise(
+        fetch(`${import.meta.env.VITE_BASE_URL}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        }).then(async (res) => {
+          if (!res.ok) {
+            const { message } = await res.json();
+            throw new Error(message || "Login failed");
+          }
+          return res.json();
+        }),
+        {
+          loading: "Authenticating...",
+          success: "Login successful",
+          error: (err) =>
+            typeof err === "string" ? err : err?.message || "Login failed",
+        }
+      );
 
-      if (!res.ok) {
-        const { message } = await res.json();
-        throw new Error(message || "Login failed");
-      }
-
-      const data = await res.json();
       login(data?.user, data?.token);
       navigate(`/${data.user.role}`);
     } catch (err) {
       if (err instanceof Error) {
-        setError(err.message || "Something went wrong");
+        setError(err.message);
       } else {
-        setError("Something went wrong");
+        setError("Login failed");
       }
     } finally {
       setLoading(false);

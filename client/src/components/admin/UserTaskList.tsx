@@ -1,6 +1,8 @@
 // src/components/user/UserTaskList.tsx
 import type { Task } from "../../types/types";
 import { api } from "../../lib/fetch";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function UserTaskList({
   tasks,
@@ -9,10 +11,22 @@ export default function UserTaskList({
   tasks: Task[];
   refresh: () => void;
 }) {
-  const updateStatus = async (id: string, status: Task["status"]) => {
-    await api.put(`/tasks/${id}/status`, { status });
-    refresh();
-  };
+  const [loadingTaskId, setLoadingTaskId] = useState<string | null>(null); 
+ const updateStatus = async (id: string, status: Task["status"]) => {
+   setLoadingTaskId(id);
+   try {
+     await toast.promise(
+       api.put(`/tasks/${id}/status`, { status }).then(() => refresh()),
+       {
+         loading: "Updating task...",
+         success: "Task status updated",
+         error: "Failed to update task status",
+       }
+     );
+   } finally {
+     setLoadingTaskId(null);
+   }
+ };
 
   if (tasks.length === 0) {
     return (
@@ -55,11 +69,12 @@ export default function UserTaskList({
                 Due: {new Date(task.deadline).toLocaleDateString()}
               </p>
               <select
+                disabled={loadingTaskId === task._id}
                 value={task.status}
                 onChange={(e) =>
                   updateStatus(task._id, e.target.value as Task["status"])
                 }
-                className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
               >
                 <option value="Pending">Pending</option>
                 <option value="In Progress">In Progress</option>

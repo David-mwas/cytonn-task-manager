@@ -1,5 +1,7 @@
+import type { User } from "../../types/types";
+
 type Props = {
-  user: { email?: string } | null;
+  user: User; // User can be null if not logged in
   onLogout: () => void;
   onHamburgerClick: () => void;
   title: string;
@@ -25,16 +27,25 @@ export default function DashboardHeader({
       <h1 className="flex-1 min-w-0 text-lg sm:text-xl font-bold text-gray-800 truncate">
         {title}
       </h1>
-
+      <span className="inline-block text-lg text-gray-600 truncate max-w-xs md:hidden">
+        {user && user.name
+          ? user.name.charAt(0).toUpperCase() + user.name.slice(1)
+          : "Guest"}
+      </span>
       {/* Spacer (only on small screens ensures wrap) */}
       <div className="w-full md:w-auto h-px md:hidden my-2 bg-gray-200" />
 
       {/* User info */}
-      <div className="flex-shrink-0 flex items-center space-x-3">
+      <div className="flex-shrink-0 flex  space-x-3 flex-col">
+        <span className="hidden sm:inline-block text-lg text-gray-600 truncate max-w-xs">
+          {user && user.name
+            ? user.name.charAt(0).toUpperCase() + user.name.slice(1)
+            : "Guest"}
+        </span>
         <span className="hidden sm:inline-block text-sm text-gray-600 truncate max-w-xs">
           {user?.email}
         </span>
-        {/* Uncomment if you want a logout button here */}
+
         {/*
         <button
           onClick={onLogout}

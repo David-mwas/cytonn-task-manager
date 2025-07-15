@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const validateName = (name: string) => name.trim().length >= 3;
+
   const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -26,53 +29,68 @@ const Register = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     if (!validateEmail(form.email)) {
       setError("Invalid email format");
+      toast.error("Invalid email format");
       return;
     }
 
     if (!validatePassword(form.password)) {
-      setError(
-        "Password must be at least 8 characters long and include at least one letter and one number"
-      );
+      const msg =
+        "Password must be at least 8 characters long and include at least one letter and one number";
+      setError(msg);
+      toast.error(msg);
+      return;
+    }
+    if (!validateName(form.name)) {
+      const msg = "Name must be at least 3 characters long";
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
     if (form.password !== form.confirmPassword) {
       setError("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
+    setLoading(true);
+
     try {
-      setLoading(true);
-      const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/auth/register`,
-        {
+      await toast.promise(
+        fetch(`${import.meta.env.VITE_BASE_URL}/auth/register`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            // name: form.name,
+            name: form.name,
             email: form.email,
             password: form.password,
-            // role: form.role,
+            role: form.role,
           }),
+        }).then(async (res) => {
+          if (!res.ok) {
+            const { message } = await res.json();
+            throw new Error(message || "Registration failed");
+          }
+          return res.json();
+        }),
+        {
+          loading: "Registering...",
+          success: "Registered successfully!",
+          error: (err) =>
+            typeof err === "string"
+              ? err
+              : err?.message || "Registration failed",
         }
       );
 
-      if (!res.ok) {
-        const { message } = await res.json();
-        throw new Error(message || "Registration failed");
-      }
-
       navigate("/login");
-    } catch (err: unknown) {
+    } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
       } else {

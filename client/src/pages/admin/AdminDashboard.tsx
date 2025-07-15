@@ -1,4 +1,3 @@
-// src/pages/admin/dashboard.tsx
 import { useState, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { api } from "../../lib/fetch";

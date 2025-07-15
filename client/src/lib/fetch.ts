@@ -28,7 +28,7 @@ export const api = {
     return res.json();
   },
 
-  post: async (path: string, body: any) => {
+  post: async (path: string, body: unknown) => {
     const token = getToken();
     const res = await fetch(`${BASE_URL}${path}`, {
       method: "POST",
@@ -42,7 +42,7 @@ export const api = {
     return res.json();
   },
 
-  put: async (path: string, body: any) => {
+  put: async (path: string, body: unknown) => {
     const token = getToken();
     const res = await fetch(`${BASE_URL}${path}`, {
       method: "PUT",

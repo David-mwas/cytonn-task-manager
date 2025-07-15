@@ -5,39 +5,42 @@ import { useAuth } from "../hooks/useAuth";
 import PrivateRoute from "./privateRoute";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import UserDashboard from "../pages/user/UserDashboard";
-
+import { Toaster } from "react-hot-toast";
 
 export default function AppRouter() {
   const { user } = useAuth();
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={<Navigate to={user ? `/${user.role}` : "/login"} />}
-        />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+    <>
+      <Toaster position="top-right" />
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={<Navigate to={user ? `/${user.role}` : "/login"} />}
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        <Route
-          path="/admin/*"
-          element={
-            <PrivateRoute role="admin">
-              <AdminDashboard />
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/admin/*"
+            element={
+              <PrivateRoute role="admin">
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
 
-        <Route
-          path="/user/*"
-          element={
-            <PrivateRoute role="user">
-              <UserDashboard />
-            </PrivateRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+          <Route
+            path="/user/*"
+            element={
+              <PrivateRoute role="user">
+                <UserDashboard />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }

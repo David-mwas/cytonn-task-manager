@@ -1,6 +1,8 @@
+import type { User } from "../../types/types";
+
 // components/shared/DashboardHeader.tsx
 type Props = {
-  user: { email?: string } | null;
+  user: User | null;
   onLogout: () => void;
   title?: string;
 };
@@ -17,17 +19,26 @@ export default function DashboardHeader({ user, onLogout, title }: Props) {
       <div className="flex-1" />
 
       {/* User info + logout */}
-      <div className="flex-shrink-0 flex items-center space-x-3">
+      <div className="flex-shrink-0 flex  space-x-3">
         {/* Hide email on very small screens */}
-        <span className="hidden sm:inline-block text-sm text-gray-600 truncate max-w-xs">
-          {user?.email}
-        </span>
-        <button
-          onClick={onLogout}
-          className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm"
-        >
-          Logout
-        </button>
+        <div className="flex flex-col space-x-3">
+          <span className="hidden sm:inline-block text-lg text-gray-600 truncate max-w-xs">
+            {user && user.name
+              ? user.name.charAt(0).toUpperCase() + user.name.slice(1)
+              : "Guest"}
+          </span>
+          <span className="hidden sm:inline-block text-sm text-gray-600 truncate max-w-xs">
+            {user?.email}
+          </span>
+        </div>
+        <div className="justify-end flex">
+          <button
+            onClick={onLogout}
+            className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 text-sm"
+          >
+            Logout
+          </button>
+        </div>
       </div>
     </header>
   );

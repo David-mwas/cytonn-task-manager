@@ -5,6 +5,7 @@ export type UserRole = "admin" | "user";
 export type User = {
   _id: string;
   email: string;
+  name:string;
   role: UserRole;
 };
 
