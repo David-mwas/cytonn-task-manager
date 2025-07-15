@@ -3,12 +3,13 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.model.js";
 
 export const register = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password } = req.body;
   const hashed = await bcrypt.hash(password, 10);
   try {
     const user = await User.create({ name, email, password: hashed, role });
     res.status(201).json(user);
   } catch (err) {
+    console.error(err);
     res.status(400).json({ message: "Email already taken" });
   }
 };

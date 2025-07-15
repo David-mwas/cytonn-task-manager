@@ -58,10 +58,10 @@ const Register = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            name: form.name,
+            // name: form.name,
             email: form.email,
             password: form.password,
-            role: form.role,
+            // role: form.role,
           }),
         }
       );
