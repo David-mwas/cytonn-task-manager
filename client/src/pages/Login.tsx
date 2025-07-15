@@ -11,6 +11,7 @@ const Login = () => {
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -36,7 +37,7 @@ const Login = () => {
       }
 
       const data = await res.json();
-      login(data?.user, data?.token); // data.user must include { id, email, role }
+      login(data?.user, data?.token);
       navigate(`/${data.user.role}`);
     } catch (err) {
       if (err instanceof Error) {
@@ -55,6 +56,9 @@ const Login = () => {
         onSubmit={handleLogin}
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 w-full max-w-md"
       >
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          Welcome back to Cytonn Task Manager
+        </h2>
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
 
         {error && (
@@ -77,14 +81,22 @@ const Login = () => {
 
         <div className="mb-6">
           <label className="block text-gray-700">Password</label>
-          <input
-            name="password"
-            type="password"
-            value={form.password}
-            onChange={handleChange}
-            className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-            required
-          />
+          <div className="relative">
+            <input
+              name="password"
+              type={showPassword ? "text" : "password"}
+              value={form.password}
+              onChange={handleChange}
+              className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+              required
+            />
+            <span
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer text-sm text-gray-600"
+            >
+              {showPassword ? "Hide" : "Show"}
+            </span>
+          </div>
         </div>
 
         <button
