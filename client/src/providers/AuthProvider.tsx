@@ -3,7 +3,7 @@ import { AuthContext } from "../context/AuthContext";
 import type { User } from "../types/types";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User>({} as User);
   // const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     localStorage.removeItem("cytonnUser");
     localStorage.removeItem("cytonnUserToken");
-    setUser(null);
+    setUser({} as User);
     // setToken(null);
   };
 
