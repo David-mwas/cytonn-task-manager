@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
 
 const Register = () => {
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -42,7 +40,7 @@ const Register = () => {
         throw new Error(message || "Registration failed");
       }
 
-      const data = await res.json();
+      // const data = await res.json();
       // login(data.user);
       navigate("/login");
     } catch (err: unknown) {

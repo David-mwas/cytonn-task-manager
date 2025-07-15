@@ -10,7 +10,7 @@ type AuthContextType = {
   user: User | null;
   login: (userData: User, authToken: string) => void;
   logout: () => void;
-  token: string | null;
+  // token: string | null;
   loading: boolean;
 };
 

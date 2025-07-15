@@ -14,7 +14,7 @@ export type Task = {
   _id: string;
   title: string;
   description: string;
-  assignedTo: string; // userId
+  assignedTo: User; // userId
   status: TaskStatus;
   deadline: string;
 };
