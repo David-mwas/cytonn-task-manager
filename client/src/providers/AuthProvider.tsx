@@ -1,9 +1,15 @@
 import { useState, useEffect, type ReactNode } from "react";
 import { AuthContext } from "../context/AuthContext";
-import type { User } from "../types/types";
+
+type User = {
+  _id: string;
+  email: string;
+  name: string;
+  role: "admin" | "user";
+} | null;
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User>({} as User);
+  const [user, setUser] = useState<User | null>(null);
   // const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -33,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     localStorage.removeItem("cytonnUser");
     localStorage.removeItem("cytonnUserToken");
-    setUser({} as User);
+    setUser(null);
     // setToken(null);
   };
 
