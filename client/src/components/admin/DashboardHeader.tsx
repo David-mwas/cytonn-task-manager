@@ -1,7 +1,7 @@
 import type { User } from "../../types/types";
 
 type Props = {
-  user: User; // User can be null if not logged in
+  user: User | null; // User can be null if not logged in
   onLogout: () => void;
   onHamburgerClick: () => void;
   title: string;
